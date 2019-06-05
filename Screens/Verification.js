@@ -1,17 +1,16 @@
 import React, { Component } from 'react';
 import { View, Text, TouchableOpacity,TextInput,StyleSheet,StatusBar } from 'react-native';
-import { createAppContainer, createStackNavigator, NavigationActions } from 'react-navigation'; // Version can be specified in package.json
 
 
 export default class VerificationScreen extends Component{
+	static navigationOptions = {
+      //To hide the ActionBar/NavigationBar
+      header: null,
+  	};
 	componentDidMount(){
 		this.setState({ username: this.props.navigation.getParam('email') });
 	}
 
-  static navigationOptions = {
-      //To hide the ActionBar/NavigationBar
-      header: null,
-  };
   state = {
       verification_code:"",
       username:"",
@@ -21,6 +20,8 @@ export default class VerificationScreen extends Component{
   }
   verify = () => {
     url='http://scantronbackend-env.mzszeithxu.us-west-2.elasticbeanstalk.com/authentication/confirm';
+ 
+
     fetch(url, 
      {method: 'POST',
       headers: {

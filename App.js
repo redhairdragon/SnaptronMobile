@@ -5,7 +5,8 @@ import ScanbotSDK from 'react-native-scanbot-sdk';
 import ScanScreen from "./Screens/Scan";
 import RegisterScreen from "./Screens/Register";
 import VerificationScreen from "./Screens/Verification";
-
+import CoursesScreen from "./Screens/Courses";
+import ExamsScreen from "./Screens/Exams";
 
 
 const styles= StyleSheet.create(
@@ -61,24 +62,24 @@ class LoginScreen extends Component{
       header: null,
   };
   state = {
-      username: '',
-      password: ''
+      username: 'clannad.f@gmail.com',
+      password: '111111',
   }
   handleUsername = (text) => {
-    this.setState({ username: text })
+    this.setState({ username: text.trim() })
   }
   handlePassword = (text) => {
     this.setState({ password: text })
   }
   login = (usr, pass) => {
     url=`http://scantronbackend-env.mzszeithxu.us-west-2.elasticbeanstalk.com/authentication/login?email=${usr}&password=${pass}`;
-    fetch(url, {method: 'GET'})
+    fetch(url, {method: 'GET',credentials: 'include'})
     .then((response) =>{
       console.log(response)
       if (response.ok===true)
         // response.json().then((responseJson) => {console.log(responseJson)})
         global.username = this.state.username;
-        this.props.navigation.navigate('Scan')
+        this.props.navigation.navigate('Courses')
 
       if (response.ok===false)
         alert("Wrong password/User doesn't exist")
@@ -94,7 +95,6 @@ class LoginScreen extends Component{
 
 
   render(){
-
     return(
       <View style={styles.container}>
       <StatusBar barStyle="light-content"/>
@@ -120,7 +120,7 @@ class LoginScreen extends Component{
         <View style={styles.btnContainer}>
           <TouchableOpacity 
             style={styles.btn}
-            onPress={()=>this.login(this.state.username.trim(), this.state.password)}
+            onPress={()=>this.login(this.state.username, this.state.password)}
           >
           <Text style={styles.btnTxt}>Login</Text>
           </TouchableOpacity>
@@ -159,7 +159,9 @@ const RootStack = createStackNavigator(
     Login: LoginScreen,
     Scan: ScanScreen,
     Register: RegisterScreen,
-    Verification: VerificationScreen
+    Verification: VerificationScreen,
+    Courses: CoursesScreen,
+    Exams: ExamsScreen
   },
   {
     initialRouteName: "Login"

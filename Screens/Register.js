@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import { View, Text, TouchableOpacity,TextInput,StyleSheet,StatusBar } from 'react-native';
-import { NavigationActions } from 'react-navigation'; // Version can be specified in package.json
 import VerificationScreen from "./Verification";
 
 

@@ -1,7 +1,6 @@
 import React, {Component} from 'react';
 import {Platform, StyleSheet, Text, View,TouchableOpacity} from 'react-native';
 // import { RNCamera } from 'react-native-camera';
-import RNFetchBlob from 'rn-fetch-blob'
 import ScanbotSDK from 'react-native-scanbot-sdk';
 
 // const instructions = Platform.select({
@@ -29,38 +28,12 @@ import ScanbotSDK from 'react-native-scanbot-sdk';
 
 // type Props = {};
 export default class ScanScreen extends Component {
-  createClass(){
-    console.log("createClasss")
-    url=`http://ScantronBackend-env.mzszeithxu.us-west-2.elasticbeanstalk.com/course/${global.username}`;
-    alert(url)
-    fetch(url, {
-      method: 'POST',
-        headers: {
-        'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          name:"Shen Class",
-          "description": "Automaton Theory"
-        }),
-        credentials: 'include'
-      })
-    .then((response) =>{
-      console.log(response)
-      if (response.ok===true)
-        response.json().then((responseJson) => {console.log(responseJson)})
-                       .catch((error) => {console.error(error);})
-      if (response.ok===false)
-        alert("????") 
-    })
-    .catch((error) => {
-         console.error(error);
-    });
-  }
-
+  static navigationOptions = {
+      //To hide the ActionBar/NavigationBar
+      header: null,
+  };
   componentDidMount() {
-    this.createClass();
     this.initializeSDK();
-
   }
   render() {
     return (
