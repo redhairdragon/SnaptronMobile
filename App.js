@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import { View, Text, TouchableOpacity,TextInput,StyleSheet,StatusBar } from 'react-native';
 import { createAppContainer, createStackNavigator, NavigationActions } from 'react-navigation'; // Version can be specified in package.json
-import ScanbotSDK from 'react-native-scanbot-sdk';
 import ScanScreen from "./Screens/Scan";
 import RegisterScreen from "./Screens/Register";
 import VerificationScreen from "./Screens/Verification";
@@ -73,6 +72,7 @@ class LoginScreen extends Component{
   }
   login = (usr, pass) => {
     url=`http://scantronbackend-env.mzszeithxu.us-west-2.elasticbeanstalk.com/authentication/login?email=${usr}&password=${pass}`;
+    console.log(url)
     fetch(url, {method: 'GET',credentials: 'include'})
     .then((response) =>{
       console.log(response)

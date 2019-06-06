@@ -55,13 +55,19 @@ export default class ExamScreen extends Component{
     console.log(this.props.navigation.getParam('courseId'))
     console.log("State:")
     console.log(this.state.courseId)
-    
   }
   
   componentDidMount() {
     this.retrieveExamsList();
   }
   
+  navigateToScan(exam){
+    info={
+      examId:exam.examid,
+      examName:exam.name
+    }
+    this.props.navigation.navigate('Scan',info)
+  }
 
   render(){
     return(
@@ -75,7 +81,7 @@ export default class ExamScreen extends Component{
             leftAvatar={{ title:String(i+1) }}
             title={exam.name}
             subtitle={exam.answers.join(",")}
-            onPress={()=>{this.props.navigation.navigate('Scan',{examId:exam.examid})}}
+            onPress={()=>this.navigateToScan(exam)}
             onLongPress={()=>{this.removeExam(exam.examid)}}
           />
         ))

@@ -10,12 +10,16 @@ export default class CoursesScreen extends Component{
       //To hide the ActionBar/NavigationBar
       header: null,
   };
-  state = {
+  constructor(props){
+    super(props);
+    this.state = {
      isOpen: false,
      courses:[],
      className:"",
      classDescription:""
+    }
   }
+  
   componentDidMount() {
     this.retrieveCoursesList()
   }
@@ -57,7 +61,6 @@ export default class CoursesScreen extends Component{
         <View style={{flex: 1,flexDirection: 'column', justifyContent: "space-around",alignItems: 'center'}}>
           <TextInput
             style={{width:"70%", backgroundColor: '#DDDDDD',height:"45%",padding: 15}}
-            // style={styles.input}
             ref="className"
             placeholder="Class Name"
             returnKeyType="next"
@@ -75,14 +78,14 @@ export default class CoursesScreen extends Component{
           />
         </View>
       </Modal>
-      
-
     </View>
     );
   }
+
   removeCourse(id){
     console.log("Removing Course")
     url=`http://ScantronBackend-env.mzszeithxu.us-west-2.elasticbeanstalk.com/course/${global.username}/${id}`
+
     fetch(url, {method: 'DELETE',credentials: 'include'})
     .then((response) =>{
       if (response.ok===true)
@@ -92,17 +95,18 @@ export default class CoursesScreen extends Component{
          console.error(error);
     });
   }
+
   retrieveCoursesList(){
     console.log("Retrieving Courses")
-
     url=`http://ScantronBackend-env.mzszeithxu.us-west-2.elasticbeanstalk.com/course/${global.username}`  
+    console.log(url)
     fetch(url, {method: 'GET',credentials: 'include'})
     .then((response) =>{
       console.log(response)
       if (response.ok===true)
         response.json()
         .then((responseJson) => {
-          // console.log(responseJson)
+          console.log(responseJson)
           this.setState({courses:responseJson})
         })
         .catch((error) => {console.error(error);})
@@ -113,6 +117,7 @@ export default class CoursesScreen extends Component{
          console.error(error);
     });
   }
+
   createClass(){
     url=`http://ScantronBackend-env.mzszeithxu.us-west-2.elasticbeanstalk.com/course/${global.username}`;
     fetch(url, {
