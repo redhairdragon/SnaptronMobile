@@ -45,9 +45,9 @@ export default class ScanScreen extends Component {
     this.initializeSDK();
     ScanbotSDK.isLicenseValid()
     .then((valid)=>{
-      console.log("***************************")
-      console.log(valid)
-      console.log("***************************")
+      // console.log("***************************")
+      // console.log(valid)
+      // console.log("***************************")
     })
   }
   render() {
@@ -89,7 +89,8 @@ export default class ScanScreen extends Component {
       // Customize colors, text resources, etc..
       polygonColor: '#00ffff',
       cameraPreviewMode: 'FIT_IN',
-      multiPageEnabled: isMultiple
+      multiPageEnabled: isMultiple,
+      flashEnabled:true
     });
     if (result.status === "OK") {
       //handover to cropping screen
@@ -109,54 +110,83 @@ export default class ScanScreen extends Component {
   submitImage(page){
     //Read file to bin
     // console.log(page.originalImageFileUri)
-    let pic_bin = ''
+    var pic_bin_uncropped='';
+    send=()=>{
+      var pic_bin = ''
+      RNFetchBlob.fs.readStream(
+          // page.originalImageFileUri.split('?')[0],
+          page.documentImageFileUri.split('?')[0],
+          'base64',
+          4095)
+      .then((ifstream) => {
+          ifstream.open()
+          ifstream.onData((chunk) => {
+            pic_bin += chunk
+          })
+          ifstream.onError((err) => {
+            console.log('oops', err)
+          })
+          ifstream.onEnd(() => {
+            console.log("============================")
+            console.log(pic_bin)
+
+            console.log(pic_bin_uncropped)
+            console.log("============================")
+            url=`http://ScantronBackend-env.mzszeithxu.us-west-2.elasticbeanstalk.com/submission/${global.username}/${this.state.examId}`;
+            fetch(url, {
+              headers: {
+                'Content-Type': 'application/json'
+              },
+              method: 'POST',
+              body: JSON.stringify({
+                // exam_image:pic_bin
+                cropped_image:pic_bin,
+                uncropped_image:pic_bin_uncropped
+              }),
+              credentials: 'include'
+            })
+            .then((response) =>{
+              console.log(response)
+              if (response.ok===true)
+                response.json()
+                .then((responseJson) => {
+                  console.log(responseJson)
+                  this.setState({courses:responseJson})
+                })
+                .catch((error) => {console.error(error);})
+              if (response.ok===false)
+                alert("Fail to submit pic") 
+            })
+            .catch((error) => {
+                 console.error(error);
+            });
+          })
+      })
+      .catch((error) => {
+           console.error(error);
+      });
+    }
+    // send()
     RNFetchBlob.fs.readStream(
-        // page.originalImageFileUri.split('?')[0],
-        page.documentImageFileUri.split('?')[0],
+        page.originalImageFileUri.split('?')[0],
+        // page.documentImageFileUri.split('?')[0],
         'base64',
         4095)
     .then((ifstream) => {
         ifstream.open()
         ifstream.onData((chunk) => {
-          pic_bin += chunk
+          pic_bin_uncropped += chunk
         })
         ifstream.onError((err) => {
           console.log('oops', err)
         })
-        ifstream.onEnd(() => {  
-          url=`http://ScantronBackend-env.mzszeithxu.us-west-2.elasticbeanstalk.com/submission/${global.username}/${this.state.examId}`;
-          // console.log("Sending: "+url)
-          // console.log(pic_bin)
-          fetch(url, {
-            headers: {
-              'Content-Type': 'application/json'
-            },
-            method: 'POST',
-            body: JSON.stringify({
-              exam_image:pic_bin
-            }),
-            credentials: 'include'
-          })
-          .then((response) =>{
-            console.log(response)
-            if (response.ok===true)
-              response.json()
-              .then((responseJson) => {
-                console.log(responseJson)
-                this.setState({courses:responseJson})
-              })
-              .catch((error) => {console.error(error);})
-            if (response.ok===false)
-              alert("Fail to submit pic") 
-          })
-          .catch((error) => {
-               console.error(error);
-          });
+        ifstream.onEnd(() => { 
+          send()
         })
     })
-    .catch((error) => {
-         console.error(error);
-    });
+    
+
+    
   }
    async initializeSDK() {
     if(global.SDKInit==true)

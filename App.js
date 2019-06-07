@@ -76,7 +76,7 @@ class LoginScreen extends Component{
   }
   login = (usr, pass) => {
     url=`http://scantronbackend-env.mzszeithxu.us-west-2.elasticbeanstalk.com/authentication/login?email=${usr}&password=${pass}`;
-    console.log(url)
+    // alert(url)
     fetch(url, {method: 'GET',credentials: 'include'})
     .then((response) =>{
       console.log(response)
@@ -90,6 +90,7 @@ class LoginScreen extends Component{
     })
     .catch((error) => {
          console.error(error);
+         alert(error)
     });
   }
 
