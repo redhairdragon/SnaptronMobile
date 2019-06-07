@@ -47,22 +47,27 @@ export default class ScanScreen extends Component {
   render() {
     return (
       <View style={styles.container}>
-        <View style={{ flex: 0, flexDirection: 'row', justifyContent: 'center' }}>
-          <TouchableOpacity onPress={()=>this.startScanbotCameraButtonTapped(false)} style={styles.capture}>
-            <Text style={{ fontSize: 14 }}> Scan Single</Text>
+          <TouchableOpacity
+            onPress={()=>this.startScanbotCameraButtonTapped(false)} 
+            style={styles.buttonSingle}
+          >
+          <Text style={{fontSize:40,textAlign: 'center',textAlignVertical:"center"}}>Single Paper</Text>
           </TouchableOpacity>
-          <TouchableOpacity onPress={()=>this.startScanbotCameraButtonTapped(true)} style={styles.capture}>
-            <Text style={{ fontSize: 14 }}> Scan Multiple </Text>
+          <TouchableOpacity
+            onPress={()=>this.startScanbotCameraButtonTapped(true)} 
+            style={styles.buttonMultiple}
+          >
+          <Text style={{fontSize:40,textAlign: 'center',textAlignVertical:"center"}}>Multiple Papers</Text>
           </TouchableOpacity>
-        </View>
       </View>
     );
   }
- startScanbotCameraButtonTapped = async () => {
+ startScanbotCameraButtonTapped = async (isMultiple) => {
     const result = await ScanbotSDK.UI.startDocumentScanner({
       // Customize colors, text resources, etc..
       polygonColor: '#00ffff',
-      cameraPreviewMode: 'FIT_IN'
+      cameraPreviewMode: 'FIT_IN',
+      multiPageEnabled: isMultiple
     });
     if (result.status === "OK") {
       console.log(result.pages)
@@ -74,7 +79,7 @@ export default class ScanScreen extends Component {
     console.log(this)
     //Read file to bin
     console.log(page.documentImageFileUri)
-    pic_bin = ''
+    let pic_bin = ''
     RNFetchBlob.fs.readStream(
         page.documentImageFileUri.split('?')[0],
         'base64',
@@ -88,25 +93,9 @@ export default class ScanScreen extends Component {
           console.log('oops', err)
         })
         ifstream.onEnd(() => {  
-          // console.log("image:\n"+pic_bin)
-          // var data = new FormData()
-          // let file = {uri: page.documentImageFileUri, type: 'application/octet-stream', name: 'exam_image'};
-          // data.append("file", file);
-
-          // var blob=new Blob([pic_bin],{type:"image/jpeg"});
-          // data.append('exam_image',pic_bin)
-          // var data=new URLSearchParams();
-          // data.append('exam_image', pic_bin)
-
-          // data.append('exam_image',{
-          //   uri: page.documentImageFileUri.split('?')[0],
-          //   type: 'image/jpeg',
-          //   name: page.pageId
-          // })
-
           url=`http://ScantronBackend-env.mzszeithxu.us-west-2.elasticbeanstalk.com/submission/${global.username}/${this.state.examId}`;
           // console.log("Sending: "+url)
-          // console.log(data)
+          console.log(pic_bin)
           fetch(url, {
             headers: {
               'Content-Type': 'application/json'
@@ -176,7 +165,7 @@ export default class ScanScreen extends Component {
       licenseKey: "",
       loggingEnabled: true,
       storageImageFormat: "JPG",
-      storageImageQuality: 30
+      storageImageQuality: 50
     };
     try {
       const result = await ScanbotSDK.initializeSDK(options);
@@ -199,18 +188,19 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     justifyContent: 'center',
+  },
+  buttonSingle: {
     alignItems: 'center',
-    backgroundColor: '#F5FCFF',
+    height:"50%",
+    backgroundColor: 'red',
+    justifyContent: 'center',
   },
-  welcome: {
-    fontSize: 20,
-    textAlign: 'center',
-    margin: 10,
+  buttonMultiple: {
+    alignItems: 'center',
+    height:"50%",
+    backgroundColor: 'blue',
+    justifyContent: 'center',
   },
-  instructions: {
-    textAlign: 'center',
-    color: '#333333',
-    marginBottom: 5,
-  },
+  
 });
 
