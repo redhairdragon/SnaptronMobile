@@ -50,6 +50,10 @@ const styles= StyleSheet.create(
 }
 )
 export default class App extends Component {
+  constructor(props){
+    super(props)
+    global.SDKInit=false;
+  }
   render() {
     return <AppContainer />;
   }
@@ -61,8 +65,8 @@ class LoginScreen extends Component{
       header: null,
   };
   state = {
-      username: 'clannad.f@gmail.com',
-      password: '111111',
+      username: 'anthkx@ucla.edu',
+      password: '123qwe',
   }
   handleUsername = (text) => {
     this.setState({ username: text.trim() })

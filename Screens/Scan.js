@@ -43,6 +43,12 @@ export default class ScanScreen extends Component {
 
   componentDidMount() {
     this.initializeSDK();
+    ScanbotSDK.isLicenseValid()
+    .then((valid)=>{
+      console.log("***************************")
+      console.log(valid)
+      console.log("***************************")
+    })
   }
   render() {
     return (
@@ -62,7 +68,23 @@ export default class ScanScreen extends Component {
       </View>
     );
   }
- startScanbotCameraButtonTapped = async (isMultiple) => {
+
+
+  croppingPage = async (page) => {
+    let result = await ScanbotSDK.UI.startCroppingScreen(page, {
+      doneButtonTitle: 'Apply',
+      topBarBackgroundColor: '#c8193c'
+    });
+    if (result.status === "OK") {
+      return result.page
+    }
+    else{
+      return page;
+    }
+  };
+
+
+   startScanbotCameraButtonTapped = async (isMultiple) => {
     const result = await ScanbotSDK.UI.startDocumentScanner({
       // Customize colors, text resources, etc..
       polygonColor: '#00ffff',
@@ -70,17 +92,26 @@ export default class ScanScreen extends Component {
       multiPageEnabled: isMultiple
     });
     if (result.status === "OK") {
+      //handover to cropping screen
+      // await this.croppingPages(result.pages)
       console.log(result.pages)
-      result.pages.forEach((x)=>{this.submitImage(x)})
+      result.pages.forEach((x)=>{this.handlePage(x)})
     }
   };
 
+  handlePage=async (page)=>{
+    if(page.detectionResult=="OK")
+      this.submitImage(page)
+    else{
+      this.submitImage(await this.croppingPage(page))
+    }
+  }
   submitImage(page){
-    console.log(this)
     //Read file to bin
-    console.log(page.documentImageFileUri)
+    // console.log(page.originalImageFileUri)
     let pic_bin = ''
     RNFetchBlob.fs.readStream(
+        // page.originalImageFileUri.split('?')[0],
         page.documentImageFileUri.split('?')[0],
         'base64',
         4095)
@@ -95,7 +126,7 @@ export default class ScanScreen extends Component {
         ifstream.onEnd(() => {  
           url=`http://ScantronBackend-env.mzszeithxu.us-west-2.elasticbeanstalk.com/submission/${global.username}/${this.state.examId}`;
           // console.log("Sending: "+url)
-          console.log(pic_bin)
+          // console.log(pic_bin)
           fetch(url, {
             headers: {
               'Content-Type': 'application/json'
@@ -126,43 +157,12 @@ export default class ScanScreen extends Component {
     .catch((error) => {
          console.error(error);
     });
-
-  
-    
-    // console.log(data)
-
-    //send image through HTTP
-    
-
   }
-  // takePicture = async function() {
-//     console.log("COol")
-//     if (this.camera) {
-//       const options = { quality: 0.5, base64: true };
-//       const data = await this.camera.takePictureAsync(options);
-//       console.log(data.uri);
-//       let pic_bin = ''
-//       RNFetchBlob.fs.readStream(
-//           data.uri,
-//           'base64',
-//           4095)
-//       .then((ifstream) => {
-//           ifstream.open()
-//           ifstream.onData((chunk) => {
-//             pic_bin += chunk
-//           })
-//           ifstream.onError((err) => {
-//             console.log('oops', err)
-//           })
-//           ifstream.onEnd(() => {  
-//             console.log("image:\n"+pic_bin)
-//           })
-//       })
-//     }
-//   };
-  async initializeSDK() {
+   async initializeSDK() {
+    if(global.SDKInit==true)
+      return
     let options = {
-      licenseKey: "",
+      licenseKey: licenseKey,
       loggingEnabled: true,
       storageImageFormat: "JPG",
       storageImageQuality: 50

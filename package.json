@@ -1,5 +1,5 @@
 {
-  "name": "AwesomeProject",
+  "name": "Snaptron",
   "version": "0.0.1",
   "private": true,
   "scripts": {
@@ -8,7 +8,7 @@
   },
   "dependencies": {
     "react": "16.8.3",
-    "react-native": "0.59.8",
+    "react-native": "0.59.9",
     "react-native-camera": "^2.8.0",
     "react-native-camera-kit": "^8.0.0",
     "react-native-elements": "^1.1.0",

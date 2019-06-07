@@ -1,4 +1,4 @@
-package com.awesomeproject;
+package com.snaptron;
 
 import org.reactnative.camera.RNCameraPackage;
 import android.app.Application;
