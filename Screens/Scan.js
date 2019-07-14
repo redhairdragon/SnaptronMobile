@@ -10,21 +10,7 @@ import RNFetchBlob from 'rn-fetch-blob'
 //     'Shake or press menu button for dev menu',
 // });
 
-let licenseKey =
-  "oS+qWvWge+ebPhz39TcreeiEEGEc/7" +
-  "XXjFFgpbuRRTpMcFnxdTgYLTGQvE3O" +
-  "NB2X4DtWy6rC52taWYu5Kl4dRoVCSm" +
-  "VgZNXc4NOFlxo4IcgqXfVTQ8sQB1St" +
-  "eRcU7nkaLpLdD4EXUAUO7/7A80ITCU" +
-  "6SjquhqgI7HAf4O/bGEcEzSq3YoqTz" +
-  "gtg273qb7tMmBVQm+PRL+99Y6xru5J" +
-  "SnK84rfIA7tT8lsvZqOmxKFbeygB+d" +
-  "gwwiq+kkyTA8sLThY3X4HRDJoyHIga" +
-  "Y8f56Lvv09HAHjxUgxPcIGgKBqphEP" +
-  "9Yo6CpJ9nuA0Xa7aSg8oC7XQJdulRs" +
-  "37fYWN+hJ71w==\nU2NhbmJvdFNESw" +
-  "pjb20uc25hcHRyb24KMTU2MDAzODM5" +
-  "OQo1OTAKMw==\n";
+let licenseKey ="";
 
 export default class ScanScreen extends Component {
   static navigationOptions = {
